@@ -3,10 +3,6 @@ from uuid import UUID, uuid4
 
 from beanie import Document
 from pydantic import Field
-import pymongo
-
-
-MONGO_URI = "mongodb+srv://appUser:KiXCNj2w7hbCP68eQ3UHj3hm9HYprVQneu97H6QY@firstcluster.kyjvmkn.mongodb.net/?retryWrites=true&w=majority&appName=firstCluster"
 
 
 class Worker(Document):
