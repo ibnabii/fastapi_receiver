@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 
-from database import db_init
+from src.database import db_init
+
+from src.workers.router import router as worker_router
 
 app = FastAPI(
     title="FastAPI PoC",
@@ -13,4 +15,9 @@ async def startup():
     await db_init()
 
 
+@app.get("/ping", tags=["Healthcheck"])
+async def healthcheck() -> dict[str, str]:
+    return {"status": "ok"}
 
+
+app.include_router(worker_router, prefix="/worker", tags=["Workers"])

@@ -24,7 +24,7 @@ async def db_init():
     await init_beanie(
         database=database,
         document_models=[
-            "workers.models.Worker",
+            "src.workers.models.Worker",
         ]
     )
 
