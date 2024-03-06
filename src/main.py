@@ -1,25 +1,16 @@
-import asyncio
-
 from fastapi import FastAPI
 
-import database
+from database import db_init
 
-app = FastAPI()
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+app = FastAPI(
+    title="FastAPI PoC",
+    description="PoC for using FastAPI with MongoDB (via Beanie)"
+)
 
 
 @app.on_event("startup")
 async def startup():
-    await database.init()
+    await db_init()
 
 
 
