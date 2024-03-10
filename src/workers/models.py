@@ -25,6 +25,7 @@ class Worker(Document):
 
     class Settings:
         name = 'workers'
+        use_revision = True
 
     @model_validator(mode="before")
     @classmethod
