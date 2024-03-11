@@ -1,7 +1,8 @@
-from typing import List, Mapping
+from typing import List
 
 from fastapi import APIRouter, status, Depends
 
+from src.auth import check_api_key
 from src.models import ErrorModel
 from src.workers.dependencies import touch_worker
 from src.workers.models import Worker
@@ -23,6 +24,7 @@ async def get_all_workers() -> List[WorkerRead]:
     description="Create a new Worker",
     status_code=status.HTTP_201_CREATED,
     response_model=WorkerCreatedResponse,
+    dependencies=(Depends(check_api_key),)
 )
 async def create_worker(worker: WorkerCreate) -> dict:
     new_worker = await Worker.create(Worker(**worker.dict()))

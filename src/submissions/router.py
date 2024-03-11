@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, status, Depends
 
+from src.auth import check_api_key
 from src.submissions.models import Submission
 from src.submissions.schemas import SubmissionCreate, SubmissionRead
 from src.workers.dependencies import touch_worker
@@ -25,6 +26,7 @@ async def get_all_submissions() -> List[SubmissionRead]:
     description="Create a new Submission",
     status_code=status.HTTP_201_CREATED,
     response_model=SubmissionRead,
+    dependencies=(Depends(check_api_key),)
 )
 async def create_submission(submission: SubmissionCreate, worker: Worker = Depends(touch_worker)) -> SubmissionRead:
     new_submission = await Submission.create(Submission(**submission.dict(), worker_id=worker.id))
