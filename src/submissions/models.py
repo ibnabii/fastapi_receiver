@@ -8,5 +8,5 @@ from src.workers.models import Worker
 
 class Submission(BaseDocument):
     worker_id: UUID
-    submission_no: int = Field()
+    submission_no: int = Field(default_factory=int)
     data: dict

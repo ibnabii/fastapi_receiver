@@ -1,9 +1,11 @@
 from typing import List
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 
 from src.submissions.models import Submission
 from src.submissions.schemas import SubmissionCreate, SubmissionRead
+from src.workers.dependencies import touch_worker
+from src.workers.models import Worker
 
 router = APIRouter()
 
@@ -15,15 +17,15 @@ router = APIRouter()
 )
 async def get_all_submissions() -> List[SubmissionRead]:
     submissions = await Submission.find_all().to_list()
-    return [SubmissionRead.from_orm(submission) for submission in submissions]
+    return [SubmissionRead.model_validate(submission) for submission in submissions]
 
 
 @router.post(
-    "/",
+    "/{worker_id}",
     description="Create a new Submission",
     status_code=status.HTTP_201_CREATED,
     response_model=SubmissionRead,
 )
-async def create_submission(submission: SubmissionCreate) -> SubmissionRead:
-    new_submission = await Submission.create(Submission(**submission.dict()))
-    return SubmissionRead.from_orm(new_submission)
+async def create_submission(submission: SubmissionCreate, worker: Worker = Depends(touch_worker)) -> SubmissionRead:
+    new_submission = await Submission.create(Submission(**submission.dict(), worker_id=worker.id))
+    return SubmissionRead.model_validate(new_submission)

@@ -7,7 +7,6 @@ from src.workers.models import Worker
 
 
 class BaseSubmission(BaseModel):
-    worker_id: UUID
     data: dict
 
     class Config:
@@ -20,5 +19,6 @@ class SubmissionCreate(BaseSubmission):
 
 class SubmissionRead(BaseSubmission):
     id: UUID
+    worker_id: UUID
     submission_no: int
     created: datetime

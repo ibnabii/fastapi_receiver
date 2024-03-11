@@ -31,6 +31,7 @@ async def create_worker(worker: WorkerCreate) -> dict:
 
 # just for poc
 @router.get("/{worker_id}", response_model=WorkerRead,
+            description="Test endpoint to check updating Worker's validity",
             responses={
                 404: {"model": ErrorModel},
                 403: {"model": ErrorModel,
