@@ -3,8 +3,7 @@ from typing import List, Mapping
 from fastapi import APIRouter, status, Depends
 
 from src.models import ErrorModel
-from src.workers.dependencies import valid_worker_id
-from src.workers.exceptions import WorkerNotFound
+from src.workers.dependencies import touch_worker
 from src.workers.models import Worker
 from src.workers.schemas import WorkerCreate, WorkerRead, WorkerCreatedResponse
 
@@ -16,7 +15,7 @@ router = APIRouter()
 )
 async def get_all_workers() -> List[WorkerRead]:
     workers = await Worker.find_all().to_list()
-    return [WorkerRead.from_orm(worker) for worker in workers]
+    return [WorkerRead.model_validate(worker) for worker in workers]
 
 
 @router.post(
@@ -31,6 +30,20 @@ async def create_worker(worker: WorkerCreate) -> dict:
 
 
 # just for poc
-@router.get("/{worker_id}", response_model=WorkerRead, responses={404: {"model": ErrorModel}})
-async def get_worker(worker: Mapping = Depends(valid_worker_id)):
-    return WorkerRead.from_orm(worker)
+@router.get("/{worker_id}", response_model=WorkerRead,
+            responses={
+                404: {"model": ErrorModel},
+                403: {"model": ErrorModel,
+                      "content": {
+                          "application/json": {
+                              "examples": {
+                                  "default": {
+                                      "summary": "default",
+                                      "value": {"detail": "Worker expired"}
+                                  }
+                              }
+                          }
+                      }}
+            })
+async def get_worker(worker: Worker = Depends(touch_worker)):
+    return WorkerRead.model_validate(worker)
