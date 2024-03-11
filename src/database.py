@@ -15,7 +15,7 @@ async def db_init():
     # Send a ping to confirm a successful connection
     logger = logging.getLogger("uvicorn")
     try:
-        client.admin.command('ping')
+        client.admin.command("ping")
         logger.info("Pinged! You successfully connected to MongoDB!")
     except Exception as e:
         logger.error(e)
@@ -25,6 +25,6 @@ async def db_init():
         database=database,
         document_models=[
             "src.workers.models.Worker",
-        ]
+            "src.submissions.models.Submission",
+        ],
     )
-
