@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 
 from beanie import Document
 from fastapi.encoders import jsonable_encoder
-from pydantic import Field, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 
 class BaseDocument(Document):
@@ -27,3 +27,17 @@ class BaseDocument(Document):
         default_dict = self.model_dump()
 
         return jsonable_encoder(default_dict)
+
+
+class ErrorModel(BaseModel):
+    detail: str | None
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "detail": "Object not found"
+                }
+            ]
+        }
+    }

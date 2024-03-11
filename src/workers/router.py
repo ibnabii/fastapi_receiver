@@ -1,7 +1,10 @@
-from typing import List
+from typing import List, Mapping
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 
+from src.models import ErrorModel
+from src.workers.dependencies import valid_worker_id
+from src.workers.exceptions import WorkerNotFound
 from src.workers.models import Worker
 from src.workers.schemas import WorkerCreate, WorkerRead, WorkerCreatedResponse
 
@@ -25,3 +28,9 @@ async def get_all_workers() -> List[WorkerRead]:
 async def create_worker(worker: WorkerCreate) -> dict:
     new_worker = await Worker.create(Worker(**worker.dict()))
     return {"id": new_worker.id}
+
+
+# just for poc
+@router.get("/{worker_id}", response_model=WorkerRead, responses={404: {"model": ErrorModel}})
+async def get_worker(worker: Mapping = Depends(valid_worker_id)):
+    return WorkerRead.from_orm(worker)
