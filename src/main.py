@@ -1,12 +1,12 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 from src.database import db_init
 
 from src.workers.router import router as worker_router
 
 app = FastAPI(
-    title="FastAPI PoC",
-    description="PoC for using FastAPI with MongoDB (via Beanie)"
+    title="FastAPI PoC", description="PoC for using FastAPI with MongoDB (via Beanie)"
 )
 
 
@@ -15,7 +15,11 @@ async def startup():
     await db_init()
 
 
-@app.get("/ping", tags=["Healthcheck"])
+class HealthCheckResponse(BaseModel):
+    status: str = "ok"
+
+
+@app.get("/ping", tags=["Healthcheck"], response_model=HealthCheckResponse)
 async def healthcheck() -> dict[str, str]:
     return {"status": "ok"}
 

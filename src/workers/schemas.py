@@ -24,3 +24,6 @@ class WorkerRead(BaseWorker):
     valid_until: datetime
     # revision_id: UUID | None = Field(None)
 
+
+class WorkerCreatedResponse(BaseModel):
+    id: UUID
