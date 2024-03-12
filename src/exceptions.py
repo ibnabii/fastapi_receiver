@@ -11,4 +11,4 @@ class MyHTTPException(HTTPException):
 
 class UnauthorizedException(MyHTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
-    detail = "Invalid or missing API Key"
+    detail = "Invalid or missing authentication"

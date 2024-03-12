@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, status, Depends
 
-from src.auth import check_api_key
+from src.auth import check_api_key, check_username
 from src.models import ErrorModel
 from src.workers.dependencies import touch_worker
 from src.workers.models import Worker
@@ -12,7 +12,8 @@ router = APIRouter()
 
 
 @router.get(
-    "/", description="All workers, for admin only", response_model=list[WorkerRead]
+    "/", description="All workers, for admin only", response_model=list[WorkerRead],
+    dependencies=(Depends(check_username),)
 )
 async def get_all_workers() -> List[WorkerRead]:
     workers = await Worker.find_all().to_list()
@@ -47,6 +48,6 @@ async def create_worker(worker: WorkerCreate) -> dict:
                               }
                           }
                       }}
-            })
+            }, dependencies=(Depends(check_username),))
 async def get_worker(worker: Worker = Depends(touch_worker)):
     return WorkerRead.model_validate(worker)
