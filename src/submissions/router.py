@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, status, Depends
 
 from src.auth import check_api_key, check_username
+from src.submissions.dependencies import max_submission_no
 from src.submissions.models import Submission
 from src.submissions.schemas import SubmissionCreate, SubmissionRead
 from src.workers.dependencies import touch_worker
@@ -29,6 +30,8 @@ async def get_all_submissions() -> List[SubmissionRead]:
     response_model=SubmissionRead,
     dependencies=(Depends(check_api_key),)
 )
-async def create_submission(submission: SubmissionCreate, worker: Worker = Depends(touch_worker)) -> SubmissionRead:
-    new_submission = await Submission.create(Submission(**submission.dict(), worker_id=worker.id))
+async def create_submission(submission: SubmissionCreate, worker: Worker = Depends(touch_worker),
+                            submission_no: int = Depends(max_submission_no)) -> SubmissionRead:
+    new_submission = await Submission.create(
+        Submission(**submission.dict(), worker_id=worker.id, submission_no=submission_no+1))
     return SubmissionRead.model_validate(new_submission)
