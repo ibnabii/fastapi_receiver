@@ -32,12 +32,4 @@ class BaseDocument(Document):
 class ErrorModel(BaseModel):
     detail: str | None
 
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "detail": "Object not found"
-                }
-            ]
-        }
-    }
+    model_config = {"json_schema_extra": {"examples": [{"detail": "Object not found"}]}}

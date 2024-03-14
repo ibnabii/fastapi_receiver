@@ -23,6 +23,9 @@ basic_security = HTTPBasic()
 
 def check_username(credentials: HTTPBasicCredentials = Security(basic_security)):
     for user_credential in user_credentials:
-        if credentials.username == user_credential.username and credentials.password == user_credential.password:
+        if (
+            credentials.username == user_credential.username
+            and credentials.password == user_credential.password
+        ):
             return
     raise UnauthorizedException

@@ -12,8 +12,10 @@ router = APIRouter()
 
 
 @router.get(
-    "/", description="All workers, for admin only", response_model=list[WorkerRead],
-    dependencies=(Depends(check_username),)
+    "/",
+    description="All workers, for admin only",
+    response_model=list[WorkerRead],
+    dependencies=(Depends(check_username),),
 )
 async def get_all_workers() -> List[WorkerRead]:
     workers = await Worker.find_all().to_list()
@@ -25,7 +27,7 @@ async def get_all_workers() -> List[WorkerRead]:
     description="Create a new Worker",
     status_code=status.HTTP_201_CREATED,
     response_model=WorkerCreatedResponse,
-    dependencies=(Depends(check_api_key),)
+    dependencies=(Depends(check_api_key),),
 )
 async def create_worker(worker: WorkerCreate) -> dict:
     new_worker = await Worker.create(Worker(**worker.dict()))
@@ -33,21 +35,27 @@ async def create_worker(worker: WorkerCreate) -> dict:
 
 
 # just for poc
-@router.get("/{worker_id}", response_model=WorkerRead,
-            description="Test endpoint to check updating Worker's validity",
-            responses={
-                404: {"model": ErrorModel},
-                403: {"model": ErrorModel,
-                      "content": {
-                          "application/json": {
-                              "examples": {
-                                  "default": {
-                                      "summary": "default",
-                                      "value": {"detail": "Worker expired"}
-                                  }
-                              }
-                          }
-                      }}
-            }, dependencies=(Depends(check_username),))
+@router.get(
+    "/{worker_id}",
+    response_model=WorkerRead,
+    description="Test endpoint to check updating Worker's validity",
+    responses={
+        404: {"model": ErrorModel},
+        403: {
+            "model": ErrorModel,
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "default": {
+                            "summary": "default",
+                            "value": {"detail": "Worker expired"},
+                        }
+                    }
+                }
+            },
+        },
+    },
+    dependencies=(Depends(check_username),),
+)
 async def get_worker(worker: Worker = Depends(touch_worker)):
     return WorkerRead.model_validate(worker)

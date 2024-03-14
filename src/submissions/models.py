@@ -3,7 +3,6 @@ from uuid import UUID
 from pydantic import Field
 
 from src.models import BaseDocument
-from src.workers.models import Worker
 
 
 class Submission(BaseDocument):

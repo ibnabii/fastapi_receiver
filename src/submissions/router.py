@@ -16,7 +16,7 @@ router = APIRouter()
     "/",
     description="All submissions, for admin only",
     response_model=list[SubmissionRead],
-    dependencies=(Depends(check_username),)
+    dependencies=(Depends(check_username),),
 )
 async def get_all_submissions() -> List[SubmissionRead]:
     submissions = await Submission.find_all().to_list()
@@ -28,10 +28,16 @@ async def get_all_submissions() -> List[SubmissionRead]:
     description="Create a new Submission",
     status_code=status.HTTP_201_CREATED,
     response_model=SubmissionRead,
-    dependencies=(Depends(check_api_key),)
+    dependencies=(Depends(check_api_key),),
 )
-async def create_submission(submission: SubmissionCreate, worker: Worker = Depends(touch_worker),
-                            submission_no: int = Depends(max_submission_no)) -> SubmissionRead:
+async def create_submission(
+    submission: SubmissionCreate,
+    worker: Worker = Depends(touch_worker),
+    submission_no: int = Depends(max_submission_no),
+) -> SubmissionRead:
     new_submission = await Submission.create(
-        Submission(**submission.dict(), worker_id=worker.id, submission_no=submission_no+1))
+        Submission(
+            **submission.dict(), worker_id=worker.id, submission_no=submission_no + 1
+        )
+    )
     return SubmissionRead.model_validate(new_submission)

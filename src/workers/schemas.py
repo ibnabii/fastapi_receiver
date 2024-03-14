@@ -9,9 +9,7 @@ class BaseWorker(BaseModel):
     version: str = Field(max_length=100)
     pid: int | None = None
 
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = {"from_attributes": True}
 
 
 class WorkerCreate(BaseWorker):
