@@ -14,3 +14,25 @@ services:
       - .:/app
     env_file:
       - .env
+    depends_on:
+      mongo_db:
+        condition: service_healthy
+
+  mongo_db:
+    image: mongo
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+    container_name: receiver_mongodb
+    ports:
+      - 8001:27017
+    volumes:
+      - receiver_mongodb_volume:/data/db
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASS}
+
+
+volumes:
+  receiver_mongodb_volume:
