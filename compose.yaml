@@ -1,0 +1,13 @@
+services:
+  server:
+    container_name: receiver_fastapi
+    build:
+      context: .
+    ports:
+      - 8000:8000
+    command: "uvicorn src.main:app --host=0.0.0.0"
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+

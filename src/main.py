@@ -21,7 +21,7 @@ class HealthCheckResponse(BaseModel):
 
 
 @app.get("/ping", tags=["Healthcheck"], response_model=HealthCheckResponse)
-async def healthcheck() -> dict[str, str]:
+def healthcheck() -> dict[str, str]:
     return {"status": "ok"}
 
 
