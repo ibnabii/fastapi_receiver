@@ -21,8 +21,8 @@ class HealthCheckResponse(BaseModel):
 
 
 @app.get("/ping", tags=["Healthcheck"], response_model=HealthCheckResponse)
-def healthcheck() -> dict[str, str]:
-    return {"status": "ok"}
+def healthcheck():
+    return HealthCheckResponse()
 
 
 app.include_router(worker_router, prefix="/workers", tags=["Workers"])

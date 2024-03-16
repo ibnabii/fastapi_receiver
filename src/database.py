@@ -3,8 +3,7 @@ import logging
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-MONGO_URI = "mongodb+srv://appUser:KiXCNj2w7hbCP68eQ3UHj3hm9HYprVQneu97H6QY@firstcluster.kyjvmkn.mongodb.net/?retryWrites=true&w=majority&appName=firstCluster"
-DB_NAME = "beanie_poc_db"
+from src.config import DB_NAME, MONGO_URI
 
 
 async def db_init():

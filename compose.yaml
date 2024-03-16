@@ -5,9 +5,12 @@ services:
       context: .
     ports:
       - 8000:8000
-    command: "uvicorn src.main:app --host=0.0.0.0"
+    command: "uvicorn src.main:app --reload --host=0.0.0.0"
     develop:
       watch:
         - action: rebuild
           path: .
-
+    volumes:
+      - .:/app
+    env_file:
+      - .env
